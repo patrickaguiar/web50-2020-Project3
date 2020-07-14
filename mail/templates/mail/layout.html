@@ -3,16 +3,96 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>{% block title %}Mail{% endblock %}</title>
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css" integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" crossorigin="anonymous">
+    
+        <!-- Font Awasome -->
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.13.1/css/all.css" integrity="sha384-xxzQGERXS00kBmZW/6qxqJPyxW3UR0BPsL4c8ILaIWXva5kFi7TxkIIaMiKtqV1Q" crossorigin="anonymous">
+    
+        <!-- My CSS -->
         <link rel="stylesheet" href="{% static 'mail/styles.css' %}">
+    
+        <!-- My Js -->
+        <script src="functions.js"></script>
+    
+        <title>{% block title %}Mail{% endblock %}</title>
+
         {% block script %}
         {% endblock %}
-    </head>
+    </head>     
     <body>
-        <div class="container">
-            {% block body %}
-            {% endblock %}
+        <nav class="navbar navbar-expand-md navbar-dark bg-dark d-md-none">
+            <div class="container-fluid">
+                <a href="#" class="navbar-brand inbox"><strong><i class="fas fa-envelope"></i> Mail50</strong></a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+                </button>
+          
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+              <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                  <a class="nav-link inbox" href="#"><i class="far fa-envelope"></i> Inbox</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link archived" href="#"><i class="far fa-folder-open"></i> Archived</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link sent" href="#"><i class="far fa-paper-plane"></i> Sent</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link compose" href="#"><i class="far fa-edit"></i> Compose</a>
+                </li>
+              </ul>
+            </div>
+            </div>    
+        </nav>
+    
+        <nav class="navbar navbar-dark bg-secondary p-0 shadow" id="nav-top">
+            <div class="row g-0">
+                <div class="col-md-3 col-lg-2 p-2 bg-dark text-center d-none d-md-block">
+                    <a href="#" class="navbar-brand px-3 inbox"><strong><i class="fas fa-envelope"></i> Mail50</strong></a>
+                </div>
+    
+                <div class="col">
+                    <form action="#" class="h-100">
+                        <input type="text" class="form-control form-control-dark h-100 h-100 rounded-0 border-0" placeholder="Search">
+                    </form>
+                </div>
+    
+                <a href="{% url 'logout' %}" class="text-muted ml-auto rounded-0 col-md-2 col-lg-1 btn btn-dark">
+                    Sign Out
+                </a>
+            </div>
+        </nav>
+
+        <div class="wrapper" id="main-row">
+
+            <!-- SideBar -->
+            <nav id="sidebar" class="bg-dark col-md-3 col-lg-2 h-100 d-none d-md-block">
+                <div id="sidebar-header" class="py-4 px-2">
+                    <a href="#" class="btn btn-light btn-block compose">Compose Email</a>
+                </div>
+                <ul class="list-unstyled components">
+                    <li class="px-3 mb-3">
+                        <a href="#" class="inbox text-white nav-link p-0 h5"><i class="far fa-envelope"></i> Inbox</a>
+                    </li>
+                    <li class="px-3 mb-3">
+                        <a href="#" class="archived text-white nav-link p-0 h5"><i class="far fa-folder-open"></i> Archived</a>
+                    </li>
+                    <li class="px-3 mb-3">
+                        <a href="#" class="sent text-white nav-link p-0 h5"><i class="far fa-paper-plane"></i> Sent</a>
+                    </li>
+                </ul>
+            </nav>
+    
+            <div class="container" id="content">
+                {% block body %}
+                {% endblock %}
+            </div>  
         </div>
     </body>
 </html>

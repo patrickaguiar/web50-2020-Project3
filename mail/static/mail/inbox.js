@@ -1,10 +1,24 @@
 document.addEventListener('DOMContentLoaded', function() {
 
+  //Design Funcs
+  mainRow = document.querySelector('#main-row');
+  navTopHeight = document.querySelector('#nav-top').clientHeight;
+  windowHeight = window.innerHeight;
+  mainRow.style.height = `${windowHeight - navTopHeight}px`;
+
   // Use buttons to toggle between views
-  document.querySelector('#inbox').addEventListener('click', () => load_mailbox('inbox'));
-  document.querySelector('#sent').addEventListener('click', () => load_mailbox('sent'));
-  document.querySelector('#archived').addEventListener('click', () => load_mailbox('archive'));
-  document.querySelector('#compose').addEventListener('click', load_compose_email);
+  document.querySelectorAll('.inbox').forEach(button => {
+    button.addEventListener('click', () => load_mailbox('inbox'))
+  });
+  document.querySelectorAll('.sent').forEach(button => {
+    button.addEventListener('click', () => load_mailbox('sent'))
+  });
+  document.querySelectorAll('.archived').forEach(button => {
+    button.addEventListener('click', () => load_mailbox('archive'))
+  });
+  document.querySelectorAll('.compose').forEach(button => {
+    button.addEventListener('click', load_compose_email)
+  });
 
   // By default, load the inbox
   load_mailbox('inbox');
@@ -79,9 +93,9 @@ function load_compose_email() {
       console.log(result);
       load_mailbox('inbox');
       if(result.error){
-        show_message(result.error, document.querySelector('#emails-view'));
+        show_message(result.error, document.querySelector('#emails-alert'));
       }else{
-        show_message(result.message, document.querySelector('#emails-view'));
+        show_message(result.message, document.querySelector('#emails-alert'));
       }   
     });
   });
@@ -89,46 +103,47 @@ function load_compose_email() {
 
 function load_mailbox(mailbox) {
   // Show the mailbox name
-  document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
+  //document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
+  document.querySelector('#emails-table').innerHTML = '';
+  document.querySelector('#emails-alert').innerHTML = '';
 
   //Get mails
   get_mail(mailbox).then(result => {
+    var counter = 1;
     result.forEach(email => {
       console.log(email);
 
       //Create Row
-      emailRow = document.createElement('div');
+      emailRow = document.createElement('tr');
       if(email.read){
-        emailRow.className = 'row p-3 bg-light mb-1';
-      }else{
-        emailRow.className = 'row p-3 bg-white mb-1';
+        emailRow.className = 'table-info';
       }
-      
-      //Create Cols
-      senderCol = document.createElement('div');
-      subjectCol = document.createElement('div');
-      timestampCol = document.createElement('div');
 
-      //Add classes to cols
-      senderCol.className = 'col-2';
-      subjectCol.className = 'col';
-      timestampCol.className = 'col-2 text-right';
+      //Create items
+      counterRow = document.createElement('th');
+      sender = document.createElement('td');
+      subject = document.createElement('td');
+      timestamp = document.createElement('td');
 
-      //Add content to cols
-      senderCol.innerHTML = email.sender;
-      subjectCol.innerHTML = email.subject;
-      timestampCol.innerHTML = email.timestamp;
+      //Inner items
+      counterRow.innerHTML = counter;
+      sender.innerHTML = email.sender;
+      subject.innerHTML = email.subject;
+      timestamp.innerHTML = email.timestamp
 
       //Append Cols to Row
-      cols = [senderCol, subjectCol, timestampCol];
+      cols = [counterRow, sender, subject, timestamp];
       for(i=0; i<cols.length; i++){
-        emailRow.append(cols[i])
+        emailRow.append(cols[i]);
       }
 
       emailRow.addEventListener('click', () => load_email_page(email.id)); 
 
       //Append row to mailbox
-      document.querySelector('#emails-view').append(emailRow);
+      document.querySelector('#emails-table').append(emailRow);
+
+      //counter
+      counter++;
     });
   });
   
@@ -140,10 +155,10 @@ function load_mailbox(mailbox) {
 
 function load_email_page(email_id){
   get_unique_email(email_id).then(email => {
-    document.querySelector('#email-sender').innerHTML = `Sender: ${email.sender}`;
-    document.querySelector('#email-recipients').innerHTML = `Recipients: ${email.recipients}`;
-    document.querySelector('#email-timestamp').innerHTML = `Timestamp: ${email.timestamp}`;
-    document.querySelector('#email-subject').innerHTML = `Subject: ${email.subject}`;
+    document.querySelector('#email-sender').innerHTML = `${email.sender}`;
+    document.querySelector('#email-recipients').innerHTML = `${email.recipients}`;
+    document.querySelector('#email-timestamp').innerHTML = `${email.timestamp}`;
+    document.querySelector('#email-subject').innerHTML = `${email.subject}`;
     document.querySelector('#email-body').innerHTML = email.body;
   
     read_update(email_id, true);
